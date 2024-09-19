@@ -1,66 +1,71 @@
-## Foundry
+# First Flight #25: MysterBox
 
-**Foundry is a blazing fast, portable and modular toolkit for Ethereum application development written in Rust.**
+### Prize Pool
 
-Foundry consists of:
+- High - 100 XP
+- Medium - 20 XP
+- Low - 2 XP
 
--   **Forge**: Ethereum testing framework (like Truffle, Hardhat and DappTools).
--   **Cast**: Swiss army knife for interacting with EVM smart contracts, sending transactions and getting chain data.
--   **Anvil**: Local Ethereum node, akin to Ganache, Hardhat Network.
--   **Chisel**: Fast, utilitarian, and verbose solidity REPL.
+- Starts: September, 26 2024 Noon UTC
 
-## Documentation
+- Ends: October, 03 2024 Noon UTC
 
-https://book.getfoundry.sh/
+- nSLOC: 56
 
-## Usage
+[//]: # (contest-details-open)
 
-### Build
+## About the Project
 
-```shell
-$ forge build
+**MysteryBox** is a thrilling protocol where users can purchase mystery boxes containing random rewards! Open your box to reveal amazing prizes, or trade them with others. Will you get lucky and find the rare treasures?
+
+### Actors
+
+- **Owner/Admin (Trusted)** - Can set the price of boxes, add new rewards, and withdraw funds.
+- **User/Player** - Can purchase mystery boxes, open them to receive rewards, and trade rewards with others.
+
+[//]: # (contest-details-close)
+
+[//]: # (scope-open)
+
+## Scope (contracts)
+
+All Contracts in `src` are in scope.
+
+```js
+src/
+├── MysteryBox.sol
+```
+## Compatibilities
+
+- **Blockchains**: EVM Equivalent Chains Only
+- **Tokens**: Standard ERC20 Tokens Only
+
+[//]: # (scope-close)
+
+[//]: # (getting-started-open)
+
+## Setup
+
+Clone the repo
+```bash
+git clone https://github.com/Cyfrin/2024-09-mystery-box.git
+```
+Open in VSCode
+```bash
+code 2024-09-mystery-box/
 ```
 
-### Test
-
-```shell
-$ forge test
+Build and run tests
+```bash
+forge test
 ```
 
-### Format
+[//]: # (getting-started-close)
 
-```shell
-$ forge fmt
-```
+[//]: # (known-issues-open)
 
-### Gas Snapshots
+## Known Issues
 
-```shell
-$ forge snapshot
-```
+- No known issues
 
-### Anvil
-
-```shell
-$ anvil
-```
-
-### Deploy
-
-```shell
-$ forge script script/Counter.s.sol:CounterScript --rpc-url <your_rpc_url> --private-key <your_private_key>
-```
-
-### Cast
-
-```shell
-$ cast <subcommand>
-```
-
-### Help
-
-```shell
-$ forge --help
-$ anvil --help
-$ cast --help
-```
+[//]: # (known-issues-close)
