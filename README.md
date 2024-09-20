@@ -1,4 +1,4 @@
-# First Flight #25: MysterBox
+# First Flight #25: MysteryBox
 
 ### Prize Pool
 
