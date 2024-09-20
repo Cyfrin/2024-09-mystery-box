@@ -10,7 +10,7 @@
 
 - Ends: October, 03 2024 Noon UTC
 
-- nSLOC: 56
+- nSLOC: 86
 
 [//]: # (contest-details-open)
 

@@ -7,18 +7,21 @@ contract MysteryBox {
     mapping(address => uint256) public boxesOwned;
     mapping(address => Reward[]) public rewardsOwned;
     Reward[] public rewardPool;
+    uint256 public immutable i_seedFunds;
 
     struct Reward {
         string name;
         uint256 value;
     }
 
-    constructor() {
+    constructor(uint256 seedFunds) {
         owner = msg.sender;
         boxPrice = 0.1 ether;
+        i_seedFunds = seedFunds;
+        require(i_seedFunds > 0, "Seed funds must be greater than 0");
         // Initialize with some default rewards
-        rewardPool.push(Reward("Gold Coin", 1 ether));
-        rewardPool.push(Reward("Silver Coin", 0.5 ether));
+        rewardPool.push(Reward("Gold Coin", 0.5 ether));
+        rewardPool.push(Reward("Silver Coin", 0.25 ether));
         rewardPool.push(Reward("Bronze Coin", 0.1 ether));
         rewardPool.push(Reward("Coal", 0 ether));
     }
@@ -40,19 +43,61 @@ contract MysteryBox {
 
     function openBox() public {
         require(boxesOwned[msg.sender] > 0, "No boxes to open");
-        uint256 randomIndex = uint256(keccak256(abi.encodePacked(block.timestamp, msg.sender))) % rewardPool.length;
-        rewardsOwned[msg.sender].push(rewardPool[randomIndex]);
+
+        // Generate a random number between 0 and 99
+        uint256 randomValue = uint256(keccak256(abi.encodePacked(block.timestamp, msg.sender))) % 100;
+
+        // Determine the reward based on probability
+        if (randomValue < 75) {
+            // 75% chance to get Coal (0-74)
+            rewardsOwned[msg.sender].push(Reward("Coal", 0 ether));
+        } else if (randomValue < 95) {
+            // 20% chance to get Bronze Coin (75-94)
+            rewardsOwned[msg.sender].push(Reward("Bronze Coin", 0.1 ether));
+        } else if (randomValue < 99) {
+            // 4% chance to get Silver Coin (95-98)
+            rewardsOwned[msg.sender].push(Reward("Silver Coin", 0.5 ether));
+        } else {
+            // 1% chance to get Gold Coin (99)
+            rewardsOwned[msg.sender].push(Reward("Gold Coin", 1 ether));
+        }
+
         boxesOwned[msg.sender] -= 1;
     }
 
     function withdrawFunds() public {
         require(msg.sender == owner, "Only owner can withdraw");
-        payable(owner).transfer(address(this).balance);
+        (bool success,) = payable(owner).call{value: address(this).balance}("");
+        require(success, "Transfer failed");
     }
 
     function transferReward(address _to, uint256 _index) public {
         require(_index < rewardsOwned[msg.sender].length, "Invalid index");
         rewardsOwned[_to].push(rewardsOwned[msg.sender][_index]);
+        delete rewardsOwned[msg.sender][_index];
+    }
+
+    function claimAllRewards() public {
+        uint256 totalValue = 0;
+        for (uint256 i = 0; i < rewardsOwned[msg.sender].length; i++) {
+            totalValue += rewardsOwned[msg.sender][i].value;
+        }
+        require(totalValue > 0, "No rewards to claim");
+
+        (bool success,) = payable(msg.sender).call{value: totalValue}("");
+        require(success, "Transfer failed");
+
+        delete rewardsOwned[msg.sender];
+    }
+
+    function claimSingleReward(uint256 _index) public {
+        require(_index <= rewardsOwned[msg.sender].length, "Invalid index");
+        uint256 value = rewardsOwned[msg.sender][_index].value;
+        require(value > 0, "No reward to claim");
+
+        (bool success,) = payable(msg.sender).call{value: value}("");
+        require(success, "Transfer failed");
+
         delete rewardsOwned[msg.sender][_index];
     }
 
