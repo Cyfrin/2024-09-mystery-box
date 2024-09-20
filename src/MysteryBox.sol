@@ -7,18 +7,17 @@ contract MysteryBox {
     mapping(address => uint256) public boxesOwned;
     mapping(address => Reward[]) public rewardsOwned;
     Reward[] public rewardPool;
-    uint256 public immutable i_seedFunds;
+    uint256 public constant SEEDVALUE = 0.1 ether;
 
     struct Reward {
         string name;
         uint256 value;
     }
 
-    constructor(uint256 seedFunds) {
+    constructor() payable {
         owner = msg.sender;
         boxPrice = 0.1 ether;
-        i_seedFunds = seedFunds;
-        require(i_seedFunds > 0, "Seed funds must be greater than 0");
+        require(msg.value >= SEEDVALUE, "Incorrect ETH sent");
         // Initialize with some default rewards
         rewardPool.push(Reward("Gold Coin", 0.5 ether));
         rewardPool.push(Reward("Silver Coin", 0.25 ether));
